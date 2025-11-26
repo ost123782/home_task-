@@ -8,6 +8,8 @@
     "serve": "node dist/index.js"
   },
   "dependencies": {
+    "@types/amqplib": "^0.10.8",
+    "amqplib": "^0.10.9",
     "bcrypt": "^6.0.0",
     "dotenv": "^17.2.3",
     "express": "^5.1.0",

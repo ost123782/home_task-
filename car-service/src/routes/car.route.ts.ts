@@ -10,17 +10,17 @@ carRouter.get('/', async (req, res) => {
     res.json(cars);
 })
 
+carRouter.post('/create', async (req, res) => {
+    const carData = req.body;
+
+    const createdCar = createCar(carData);
+
+    res.json(createdCar);
+})
+
 carRouter.get('/:id', async (req, res) => {
     const car = await getCar(req.params.id)
     res.send(car);
-})
-
-carRouter.post('/create', async (req, res) => {
-    const {user_id} = req.body;
-
-    const car = await createCar(user_id);
-
-    res.json(car);
 })
 
 carRouter.put('/update/:id', async (req, res) => {

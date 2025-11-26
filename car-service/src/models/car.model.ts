@@ -4,7 +4,7 @@ const CarSchema = new mongoose.Schema(
   {
     make: { type: String, required: true },
     model: { type: String, required: true },
-    year: { type: Date, required: true },
+    year: { type: Date, required: false, default: null },
     user_id: { type: String, required: true }
   },
   { timestamps: true }
@@ -12,7 +12,6 @@ const CarSchema = new mongoose.Schema(
 
 CarSchema.methods.toJSON = function () {
   const obj = this.toObject();
-  delete obj.password;
   return obj;
 };
 

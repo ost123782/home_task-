@@ -1,11 +1,18 @@
 import { ICar } from "../common/interfaces/car.interface";
-import { createCarInDb, deleteCarInDb, findCar, findCars, updateCarInDb } from "../repositories/car.repository";
+import { createCarInDb, createEmptyCarInDb, deleteCarInDb, findCar, findCars, updateCarInDb } from "../repositories/car.repository";
 
-export async function createCar(userId: string) {
+export async function createEmptyCar(userId: string) {
 
-    const car = createCarInDb(userId);
+    const car = createEmptyCarInDb(userId);
 
     return car;
+}
+
+export async function createCar(car: ICar) {
+
+    const createdCar = createCarInDb(car);
+
+    return createdCar;
 }
 
 export async function getCars() {

@@ -8,14 +8,22 @@
     "serve": "node dist/index.js"
   },
   "dependencies": {
+    "@types/amqplib": "^0.10.8",
+    "amqplib": "^0.10.9",
     "bcrypt": "^6.0.0",
+    "cors": "^2.8.5",
     "dotenv": "^17.2.3",
     "express": "^5.1.0",
-    "mongoose": "^8.19.4"
+    "install": "^0.13.0",
+    "jsonwebtoken": "^9.0.2",
+    "mongoose": "^8.19.4",
+    "npm": "^11.6.3"
   },
   "devDependencies": {
     "@types/bcrypt": "^6.0.0",
+    "@types/cors": "^2.8.19",
     "@types/express": "^5.0.5",
+    "@types/jsonwebtoken": "^9.0.10",
     "@types/node": "^24.10.1",
     "nodemon": "^3.1.11",
     "ts-node": "^10.9.2",

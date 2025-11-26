@@ -16,6 +16,16 @@ export function updateUserInDb(userId: string, userData: Partial<ISafeUser>) {
     );
 }
 
+export function updateUserPasswordInDb(userId: string, newPassword: string) {
+    return userModel.updateOne(
+        { _id: userId },
+            { $set: {
+                password: newPassword
+            }        
+        }
+    );
+}
+
 export function deleteUserInDb(userId: string) {
     return userModel.deleteOne({
         _id: userId

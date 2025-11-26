@@ -23,12 +23,16 @@ export function deleteCarInDb(carId: string) {
 }
 
 
-export function createCarInDb(userId: string) {
+export function createEmptyCarInDb(userId: string) {
     return carModel.create({
         user_id: userId,
         make: "Unknown", 
-        model: "Unknown",  
-        year: null, 
+        model: "Unknown"
     });
 }
+
+export function createCarInDb(carInfo: ICar) {
+    return carModel.create(carInfo);
+}
+
 
