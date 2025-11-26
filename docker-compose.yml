@@ -1,0 +1,41 @@
+version: '3.9'
+
+services:
+  car-service:
+    build: ./car-service
+    container_name: car-service
+    ports:
+      - "${CAR_SERVICE_PORT}:5500"
+    env_file:
+      - .env
+    depends_on:
+      - user-service
+    networks:
+      - backend
+
+  user-service:
+    build: ./user-service
+    container_name: user-service
+    ports:
+      - "${USER_SERVICE_PORT}:3000"
+    env_file:
+      - .env
+    networks:
+      - backend
+
+  getaway:
+    build: ./getaway
+    container_name: getaway
+    ports:
+      - "${GETAWAY_PORT}:4000"
+    env_file:
+      - .env
+    depends_on:
+      - car-service
+      - user-service
+    networks:
+      - backend
+
+networks:
+  backend:
+    driver: bridge
