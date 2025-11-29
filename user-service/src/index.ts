@@ -2,8 +2,10 @@ import 'dotenv/config';
 import express from 'express';
 import cors from 'cors';
 import mongoose from 'mongoose';
-import userRouter from './routes/user.route.ts';
+import userPrivateRouter from './routes/user.private.route';
+import userPublicRouter from './routes/user.public.route';
 import { connectRabbit } from './rabbitmq';
+import { errorHandler } from './error.handler';
 
 
 const app = express();
@@ -13,9 +15,11 @@ app.use(cors())
 connectRabbit();
 
 const port = process.env.PORT || 3000;
+  
+app.use('/users/public', userPublicRouter);
+app.use('/users/private', userPrivateRouter);
 
-
-app.use('/users', userRouter)
+app.use(errorHandler);
 
 async function start () {
   try {

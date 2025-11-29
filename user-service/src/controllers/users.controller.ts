@@ -1,6 +1,6 @@
 import bcrypt from "bcrypt";
 import { ISafeUser } from "../common/interfaces/user.interface";
-import { createUserInDb, deleteUserInDb, findUser, findUsers, updateUserInDb, updateUserPasswordInDb } from "../repositories/user.repository";
+import { createUserInDb, deleteUserInDb, findUser, findUserByEmail, findUsers, updateUserInDb, updateUserPasswordInDb } from "../repositories/user.repository";
 import { generateAccessToken } from "../strategies/auth.strategy";
 import { publishUserCreated } from "../rabbitmq";
 
@@ -15,6 +15,25 @@ export async function createUser(name: string, email: string, password: string) 
 
     return token;
 }
+
+export async function loginUser(email: string, password: string) {
+    const user = await findUserByEmail(email);
+
+    if (!user) {
+        throw new Error('User was not found!');
+    }
+
+    const isValid = bcrypt.compare(password, user.password);
+
+    if (!isValid) {
+        throw new Error('Invalid password');   
+    }
+
+    const token = generateAccessToken(user.email, user._id.toString());
+
+    return token;
+}
+
 
 export async function getUsers() {
     return await findUsers();

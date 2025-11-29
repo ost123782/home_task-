@@ -9,6 +9,10 @@ export function findUser(id: string) {
     return userModel.findById(id);
 }
 
+export function findUserByEmail(email: string) {
+    return userModel.findOne({ email })
+}
+
 export function updateUserInDb(userId: string, userData: Partial<ISafeUser>) {
     return userModel.updateOne(
         { _id: userId },

@@ -2,7 +2,8 @@ import dotenv from 'dotenv';
 dotenv.config();
 import express from 'express';
 import mongoose from 'mongoose';
-import carRouter from './routes/car.route.ts';
+import carPrivateRouter from './routes/car.private.route';
+import carPublicRouter from './routes/car.public.route';
 import { connectToRabbitMQ } from './rabbitmq';
 
 const app = express();
@@ -12,7 +13,9 @@ const port = process.env.PORT!;
 
 connectToRabbitMQ();
 
-app.use('/cars', carRouter)
+app.use('/cars/private', carPrivateRouter)
+app.use('/cars/public', carPublicRouter)
+
 
 async function start () {
   try {
