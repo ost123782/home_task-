@@ -1,17 +1,41 @@
 version: '3.9'
 
 services:
-  car-service:
-    build: ./car-service
-    container_name: car-service
+  mongo:
+    image: mongo:6
+    container_name: mongo
     ports:
-      - "${CAR_SERVICE_PORT}:5500"
-    env_file:
-      - .env
-    depends_on:
-      - user-service
+      - "27017:27017"
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: example
+    # FIX 1: Add the network so other services can reach mongo
     networks:
       - backend
+    # FIX 2: Use 'mongosh' instead of 'mongo'
+    healthcheck:
+      test: ["CMD", "mongosh", "--eval", "db.adminCommand('ping')"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  rabbitmq:
+    image: rabbitmq:3-management
+    container_name: rabbitmq
+    environment:
+      RABBITMQ_DEFAULT_USER: ${RABBIT_USER}
+      RABBITMQ_DEFAULT_PASS: ${RABBIT_PASSWORD}
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    networks:
+      - backend
+    healthcheck:
+      test: ["CMD", "rabbitmqctl", "status"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+      start_period: 5s
 
   user-service:
     build: ./user-service
@@ -20,22 +44,48 @@ services:
       - "${USER_SERVICE_PORT}:3000"
     env_file:
       - .env
+    depends_on:
+      mongo:
+        condition: service_healthy
+      rabbitmq:
+        condition: service_healthy
     networks:
       - backend
 
-  getaway:
-    build: ./getaway
-    container_name: getaway
+  car-service:
+    build: ./car-service
+    container_name: car-service
     ports:
-      - "${GETAWAY_PORT}:4000"
+      - "${CAR_SERVICE_PORT}:5500"
     env_file:
       - .env
     depends_on:
-      - car-service
-      - user-service
+      user-service:
+        condition: service_started
+      mongo:
+        condition: service_healthy
+      rabbitmq:
+        condition: service_healthy
+    networks:
+      - backend
+
+  gateway:
+    build: ./gateway
+    container_name: gateway
+    ports:
+      - "${GATEWAY_PORT}:4000"
+    env_file:
+      - .env
+    depends_on:
+      car-service:
+        condition: service_started
+      user-service:
+        condition: service_started
     networks:
       - backend
 
 networks:
   backend:
-    driver: bridge
+
+volumes:
+  mongo_data:
