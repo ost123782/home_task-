@@ -5,7 +5,6 @@ import { useAuthStore } from '../stores/authStore';
 import { CarForm } from '../components/CarForm';
 import { PageContainer, Card, LoadingSpinner, ErrorMessage, Button, DataTable } from '../components/ui';
 import { useQuery, useConfirmDelete } from '../hooks';
-import { getErrorMessage } from '../utils';
 
 export const CarsPage = () => {
   const { token, isAuthenticated } = useAuthStore();

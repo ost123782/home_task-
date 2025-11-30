@@ -9,10 +9,8 @@ services:
     environment:
       MONGO_INITDB_ROOT_USERNAME: root
       MONGO_INITDB_ROOT_PASSWORD: example
-    # FIX 1: Add the network so other services can reach mongo
     networks:
       - backend
-    # FIX 2: Use 'mongosh' instead of 'mongo'
     healthcheck:
       test: ["CMD", "mongosh", "--eval", "db.adminCommand('ping')"]
       interval: 10s
@@ -81,6 +79,22 @@ services:
         condition: service_started
       user-service:
         condition: service_started
+    networks:
+      - backend
+
+  # --- НОВИЙ СЕРВІС WEBSITE ---
+  website:
+    build:
+      context: ./website
+      dockerfile: Dockerfile
+      # Передаємо URL Gateway під час збірки образу
+      args:
+        VITE_GATEWAY_URL: http://localhost:${GATEWAY_PORT:-4000}
+    container_name: website
+    ports:
+      - "5173:80" # Сайт буде доступний за адресою http://localhost:5173
+    depends_on:
+      - gateway
     networks:
       - backend
 

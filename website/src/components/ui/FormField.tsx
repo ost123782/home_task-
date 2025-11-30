@@ -1,4 +1,4 @@
-import { InputHTMLAttributes, LabelHTMLAttributes } from 'react';
+import { type InputHTMLAttributes, type LabelHTMLAttributes } from 'react';
 
 interface FormFieldProps {
   label: string;
