@@ -9,16 +9,23 @@ userPrivateRouter.get('/:id', async (req, res) => {
     res.send(user);
 })
 
-userPrivateRouter.put('/update/:id', async (req, res) => {
-    const {name, email} = req.body;
-    const updatedUser = await updateUser(req.params.id, {name, email});
+userPrivateRouter.put('/update', async (req, res) => {
+    const userId = req.headers['x-user-id'];
+    const { name, email } = req.body;
+
+    const updatedUser = await updateUser(userId as string, { name, email });
     res.json(updatedUser);
-})
+});
 
 
-userPrivateRouter.delete('/delete/:id', async (req, res) => {
-    await deleteUser(req.params.id);
-    res.send("User was deleted");
+
+userPrivateRouter.delete('/delete/', async (req, res) => {
+    const userId = req.headers['x-user-id'];
+
+    await deleteUser(userId as string);
+        res.json({
+        message: "Car was deleted"
+    });
 })
 
 export default userPrivateRouter;

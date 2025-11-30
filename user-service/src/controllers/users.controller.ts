@@ -2,7 +2,8 @@ import bcrypt from "bcrypt";
 import { ISafeUser } from "../common/interfaces/user.interface";
 import { createUserInDb, deleteUserInDb, findUser, findUserByEmail, findUsers, updateUserInDb, updateUserPasswordInDb } from "../repositories/user.repository";
 import { generateAccessToken } from "../strategies/auth.strategy";
-import { publishUserCreated } from "../rabbitmq";
+import { publishUserCreated, publishUserDeleted } from "../rabbitmq";
+import { AuthError, NotFoundError } from "../errors/auth.errors";
 
 export async function createUser(name: string, email: string, password: string) {
     const hashedPassword = await bcrypt.hash(password, 10);
@@ -13,25 +14,26 @@ export async function createUser(name: string, email: string, password: string) 
 
     publishUserCreated({userId: user._id.toString()});
 
-    return token;
+    return {token};
 }
+
 
 export async function loginUser(email: string, password: string) {
     const user = await findUserByEmail(email);
 
     if (!user) {
-        throw new Error('User was not found!');
+        throw new NotFoundError("User with this email was not found!");
     }
 
-    const isValid = bcrypt.compare(password, user.password);
+    const isValid = await bcrypt.compare(password, user.password);
 
     if (!isValid) {
-        throw new Error('Invalid password');   
+        throw new AuthError("Invalid password");
     }
 
     const token = generateAccessToken(user.email, user._id.toString());
 
-    return token;
+    return { token };
 }
 
 
@@ -57,6 +59,7 @@ export async function updateUser(id: string, userData: Partial<ISafeUser>) {
     return updatedUser;
 }
 
-export function deleteUser(id: string) {
-    return deleteUserInDb(id);
+export async function deleteUser(id: string) {
+    await deleteUserInDb(id);
+    publishUserDeleted({userId: id});
 }

@@ -1,5 +1,5 @@
 import { ICar } from "../common/interfaces/car.interface";
-import { createCarInDb, createEmptyCarInDb, deleteCarInDb, findCar, findCars, updateCarInDb } from "../repositories/car.repository";
+import { createCarInDb, createEmptyCarInDb, deleteAllCarsByUserIdInDb, deleteCarInDb, findCar, findCars, updateCarInDb } from "../repositories/car.repository";
 
 export async function createEmptyCar(userId: string) {
 
@@ -31,4 +31,8 @@ export async function updateCar(id: string, carData: Partial<ICar>) {
 
 export function deleteCar(id: string) {
     return deleteCarInDb(id);
+}
+
+export function deleteAllCarsByUserId(user_id: string) {
+    return deleteAllCarsByUserIdInDb(user_id);
 }

@@ -22,6 +22,12 @@ export function deleteCarInDb(carId: string) {
     })  
 }
 
+export function deleteAllCarsByUserIdInDb (user_id: string) {
+    return carModel.deleteMany({
+        user_id
+    })
+}
+
 
 export function createEmptyCarInDb(userId: string) {
     return carModel.create({
